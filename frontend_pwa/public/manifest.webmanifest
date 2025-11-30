@@ -1,0 +1,41 @@
+{
+  "name": "GASTON Gaming Store",
+  "short_name": "G Store",
+  "description": "Boutique PWA de matériel gaming (GPU, CPU, PC gamer).",
+  "lang": "fr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0f172a",
+  "background_color": "#020617",
+  "icons": [
+    {
+      "src": "/icone/icone_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icone/icone_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Voir les produits",
+      "short_name": "Produits",
+      "url": "/products",
+      "icons": [{ "src": "/icone/icone_192x192.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Accéder au panier",
+      "short_name": "Panier",
+      "url": "/panier",
+      "icons": [{ "src": "/icone/icone_192x192", "sizes": "96x96", "type": "image/png" }]
+    }
+  ]
+}

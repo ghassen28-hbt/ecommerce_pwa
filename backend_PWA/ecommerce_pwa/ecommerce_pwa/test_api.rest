@@ -1,0 +1,90 @@
+### 1) GET – Liste des catégories
+GET http://127.0.0.1:8000/api/categories/
+Accept: application/json
+
+
+### 2) GET – Liste des produits
+GET http://127.0.0.1:8000/api/products/
+Accept: application/json
+
+
+### 3) GET – Détail d’un produit (id = 1)
+GET http://127.0.0.1:8000/api/products/1/
+Accept: application/json
+
+
+### 4) POST – Créer un client (signup)
+POST http://127.0.0.1:8000/api/customers/
+Content-Type: application/json
+
+{
+  "full_name": "hassen Gamer",
+  "email": "ghssen@example.com",
+  "phone": "50123456",
+  "address": "Tunis, Tunisia"
+}
+
+
+### 5) POST – Login simple par email
+POST http://127.0.0.1:8000/api/login/
+Content-Type: application/json
+
+{
+  "email": "ghassen@example.com"
+}
+
+
+### 6) POST – Créer une commande
+POST http://127.0.0.1:8000/api/orders/
+Content-Type: application/json
+
+{
+  "customer": {
+    "full_name": "Client Test",
+    "email": "client.test@example.com",
+    "phone": "99887766",
+    "address": "Sfax"
+  },
+  "items": [
+    { "product": 1, "quantity": 2 },
+    { "product": 2, "quantity": 1 }
+  ]
+}
+
+
+### 7) POST – Enregistrer un abonnement PWA (push)
+POST http://127.0.0.1:8000/api/push/subscribe/
+Content-Type: application/json
+
+{
+  "endpoint": "https://pushservice.example.com/123456",
+  "p256dh_key": "test_key_123",
+  "auth_key": "auth_test_123"
+}
+### 8) GET – Récupérer les notifications pour un utilisateur
+GET http://127.0.0.1:8000/api/notifications/?user_id=4
+
+### Login JWT
+POST http://127.0.0.1:8000/api/auth/token/
+Content-Type: application/json
+
+{
+  "username": "titi",
+  "password": "titi1234"
+}
+
+### Profil du client connecté
+GET http://127.0.0.1:8000/api/customers/me/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY0MjM3ODc0LCJpYXQiOjE3NjQyMzc1NzQsImp0aSI6ImIyMzdjYjMxMjlkNTRmNzQ5MTExYzhkODNlMzEwYTM0IiwidXNlcl9pZCI6IjQifQ.IX5lbfTgcSibDprBMK8is_NoXO9rhee7jLleCwINsuM
+
+### Test save-subscription
+POST http://127.0.0.1:8000/api/save-subscription/
+Content-Type: application/json
+
+{
+  "endpoint": "TEST-ENDPOINT",
+  "keys": {
+    "p256dh": "AAA",
+    "auth": "BBB"
+  }
+}
