@@ -4,13 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django-cors--headers = "*"
-django-cors-headers = "*"
-pywebpush = "*"
 py-vapid = "*"
 djangorestframework-simplejwt = "*"
-django = "*"
 djangorestframework = "*"
+pywebpush = "*"
+django-cors-headers = "*"
+django = "*"
 
 [dev-packages]
 

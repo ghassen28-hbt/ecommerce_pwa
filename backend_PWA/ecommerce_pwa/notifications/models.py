@@ -2,12 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Notification(models.Model):
-    """
-    Modèle représentant une notification envoyée à un utilisateur (client).
-    Utilisé pour tracer les pushs, les alertes, les promos, etc.
-    """
-
-    # 🧑‍💻 Utilisateur concerné
+   
+  
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, 
         related_name="notifications",
@@ -41,7 +37,6 @@ class Notification(models.Model):
     # 🔗 Lien optionnel (vers un produit, une page, etc.)
     url = models.URLField(blank=True, null=True)
 
-    # 🔑 Class Meta : configuration de la table
     class Meta:
         db_table = "notifications"
         ordering = ["-created_at"]

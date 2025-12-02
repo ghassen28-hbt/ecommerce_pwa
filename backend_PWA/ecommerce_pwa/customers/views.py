@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from django.contrib.auth.models import User
 
@@ -31,6 +31,9 @@ class SignupAPIView(APIView):
       "address": "Tunis"
     }
     """
+
+    # Signup doit être accessible sans authentification
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = SignupSerializer(data=request.data)
@@ -65,6 +68,9 @@ class LoginAPIView(APIView):
       // plus tard : "token": "..." si tu ajoutes JWT
     }
     """
+
+    # Login aussi doit être public
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
