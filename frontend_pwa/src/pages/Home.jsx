@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getCategories, getLimitedProducts } from "../api";
+import { getCategories, getLimitedProducts, getProductById } from "../api";
 import { useCart } from "../pages/CartContext";
 
 
@@ -65,23 +65,30 @@ function Home() {
       // image_url: product.image_url,
       // category: product.category,
     });
-    try {
-      const token = localStorage.getItem("accessToken");
-      console.log("TOKEN =>", token);
+    
+    // Envoyer la notification uniquement si on est en ligne
+    // En mode offline, on ignore silencieusement (c'est juste une notification, pas critique)
+    if (navigator.onLine) {
+      try {
+        const token = localStorage.getItem("accessToken");
+        console.log("TOKEN =>", token);
   
-      await fetch("http://127.0.0.1:8000/api/notifications/notify-cart-add/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          product_id: product.id,
-          product_name: product.name,
-        }),
-      });
-    } catch (err) {
-      console.error("Erreur lors de l'envoi de la notif panier:", err);
+        await fetch("http://127.0.0.1:8000/api/notifications/notify-cart-add/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            product_id: product.id,
+            product_name: product.name,
+          }),
+        });
+      } catch (err) {
+        // En cas d'erreur réseau, on ignore silencieusement (pas critique pour l'UX)
+        // Le produit est déjà dans le panier, c'est l'essentiel
+        console.warn("Notification panier non envoyée (offline ou erreur réseau):", err.message);
+      }
     }
   
     // Optionnel : petit feedback utilisateur

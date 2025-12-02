@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useAuth } from "../pages/AuthContext"; // ⬅️ adapte le chemin si besoin
 
 const CartContext = createContext(null);
@@ -31,6 +31,30 @@ export function CartProvider({ children }) {
     localStorage.setItem(storageKey, JSON.stringify(cartItems));
   }, [cartItems, storageKey]);
 
+  // Vider le panier de CE user
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+    localStorage.removeItem(storageKey);
+  }, [storageKey]);
+
+  // Écouter les messages du service worker pour vider le panier après synchronisation
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === "ORDERS_SYNCED") {
+        console.log(`[Cart] ${event.data.count} commande(s) synchronisée(s), vidage du panier...`);
+        clearCart();
+      }
+    };
+
+    navigator.serviceWorker.addEventListener("message", handleMessage);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener("message", handleMessage);
+    };
+  }, [clearCart]);
+
   // Ajouter un produit au panier
   function addToCart(product) {
     setCartItems((prev) => {
@@ -62,12 +86,6 @@ export function CartProvider({ children }) {
   // Supprimer un produit
   function removeFromCart(productId) {
     setCartItems((prev) => prev.filter((item) => item.id !== productId));
-  }
-
-  // Vider le panier de CE user
-  function clearCart() {
-    setCartItems([]);
-    localStorage.removeItem(storageKey);
   }
 
   const value = {
