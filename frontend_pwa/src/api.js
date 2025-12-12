@@ -38,31 +38,43 @@ async function apiPost(endpoint, body, auth = false) {
     ...(auth ? getAuthHeaders() : {}),
   };
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
 
-  // si la réponse n'est pas JSON (ex: 204 no content), on évite une erreur
-  const data = await response.json().catch(() => null);
+    // si la réponse n'est pas JSON (ex: 204 no content), on évite une erreur
+    const data = await response.json().catch(() => null);
 
-  if (!response.ok) {
-    let message =
-      data?.detail || data?.error || `Erreur ${response.status} sur ${endpoint}`;
-
-    if (!data?.detail && !data?.error && typeof data === "object" && data !== null) {
-      const firstKey = Object.keys(data)[0];
-      const firstVal = data[firstKey];
-      if (Array.isArray(firstVal) && firstVal.length > 0) {
-        message = firstVal[0]; // ex : "customer with this email already exists."
-      }
+    // Gérer le cas où le service worker a mis la commande en file d'attente (202 Accepted)
+    if (response.status === 202 && data?.queued) {
+      return data; // Retourner directement la réponse du service worker
     }
 
-    throw new Error(message);
-  }
+    if (!response.ok) {
+      let message =
+        data?.detail || data?.error || `Erreur ${response.status} sur ${endpoint}`;
 
-  return data;
+      if (!data?.detail && !data?.error && typeof data === "object" && data !== null) {
+        const firstKey = Object.keys(data)[0];
+        const firstVal = data[firstKey];
+        if (Array.isArray(firstVal) && firstVal.length > 0) {
+          message = firstVal[0]; // ex : "customer with this email already exists."
+        }
+      }
+
+      throw new Error(message);
+    }
+
+    return data;
+  } catch (err) {
+    // Si c'est une erreur réseau et qu'on est sur l'endpoint de création de commande,
+    // le service worker devrait l'intercepter, mais si ça échoue, on laisse l'erreur remonter
+    // Le service worker devrait normalement intercepter avant que cette erreur ne soit levée
+    throw err;
+  }
 }
 
 //-----------------------------------------------------

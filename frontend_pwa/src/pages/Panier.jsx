@@ -69,7 +69,13 @@ function Panier() {
   
     } catch (err) {
       console.error("Erreur création commande :", err);
-      setError("Impossible de valider la commande pour le moment.");
+      
+      // Vérifier si c'est une erreur réseau (offline)
+      if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+        setError("Vous êtes hors ligne. Votre commande sera enregistrée et envoyée automatiquement dès que vous serez reconnecté.");
+      } else {
+        setError(err.message || "Impossible de valider la commande pour le moment.");
+      }
     } finally {
       setLoading(false);
     }
